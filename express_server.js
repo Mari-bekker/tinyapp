@@ -13,8 +13,7 @@ function generateRandomString() {
   let randomString = "";
   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   for ( let i = 0; i < urlLength; i++ ) {
-    randomString += characters.charAt(Math.random() * 
-characters.length);
+    randomString += characters.charAt(Math.random() * characters.length);
  }
  return randomString;
 };
@@ -63,8 +62,16 @@ app.post("/urls", (req, res) => {
   res.redirect(`/urls/${newURL}`);
 });
 
+app.post("/urls/:shortURL/delete", (req, res) => {
+  console.log(req);
+  const shortURL = req.params.shortURL;
+  delete urlDatabase[shortURL]; //when a variable is a key, have to use square brackets. 
+  res.redirect("/urls");
+});
+
 app.get("/u/:shortURL", (req, res) => {
-  const shortURL = req.params.shortURL
+  const shortURL = req.params.shortURL;
   const longURL = urlDatabase[shortURL];
   res.redirect(longURL);
 });
+
