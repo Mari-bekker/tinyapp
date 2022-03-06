@@ -47,8 +47,8 @@ app.get("/urls/new", (req, res) => {
 
 app.get("/urls/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL
-const templateVars = { shortURL, longURL: urlDatabase[shortURL]}
-res.render("urls_show", templateVars);
+  const templateVars = { shortURL, longURL: urlDatabase[shortURL]}
+  res.render("urls_show", templateVars);
 });
 
 app.get("/hello", (req, res) => {
@@ -56,6 +56,15 @@ app.get("/hello", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  console.log(req.body);  // Log the POST request body to the console
-  res.send("Ok");         // Respond with 'Ok' (we will replace this)
+  //console.log(req.body);  // Log the POST request body to the console
+  let newURL = generateRandomString();
+  urlDatabase[newURL] = req.body.longURL;
+  console.log("before the redirect");  //testing if this post gets triggered
+  res.redirect(`/urls/${newURL}`);
+});
+
+app.get("/u/:shortURL", (req, res) => {
+  const shortURL = req.params.shortURL
+  const longURL = urlDatabase[shortURL];
+  res.redirect(longURL);
 });
