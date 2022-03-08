@@ -7,6 +7,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 app.set("view engine", "ejs");
 
+//Generate a random string for the shoert URL
+
 function generateRandomString() {
   // The for loop will run 6 times because it is the convention for the other shortened URLs.
   urlLength = 6;
@@ -54,13 +56,16 @@ app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n")
 });
 
+// Create a short URL
+
 app.post("/urls", (req, res) => {
   //console.log(req.body);  // Log the POST request body to the console
   let newURL = generateRandomString();
   urlDatabase[newURL] = req.body.longURL;
-  console.log("before the redirect");  //testing if this post gets triggered
   res.redirect(`/urls/${newURL}`);
 });
+
+//Delete route that removes a URL from the list 
 
 app.post("/urls/:shortURL/delete", (req, res) => {
   //console.log(req);
@@ -74,3 +79,13 @@ app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[shortURL];
   res.redirect(longURL);
 });
+
+//Edit existing url
+
+app.post("/urls/:shortURL", (req, res) => {
+  let newLongURL = req.body.newLongURL;
+  let shortURL = req.params.shortURL;
+  urlDatabase[shortURL] = newLongURL;
+  res.redirect("/urls");
+});
+
