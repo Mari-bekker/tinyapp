@@ -63,7 +63,7 @@ app.post("/urls", (req, res) => {
 });
 
 app.post("/urls/:shortURL/delete", (req, res) => {
-  console.log(req);
+  //console.log(req);
   const shortURL = req.params.shortURL;
   delete urlDatabase[shortURL]; //when a variable is a key, have to use square brackets. 
   res.redirect("/urls");
@@ -74,4 +74,3 @@ app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[shortURL];
   res.redirect(longURL);
 });
-
