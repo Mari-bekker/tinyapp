@@ -10,6 +10,24 @@ app.use(cookieParser());
 
 app.set("view engine", "ejs");
 
+const urlDatabase= {
+  "b2xVn2": "http://www.lighthouselabs.ca",
+  "9sm5xK": "http://www.google.com"
+};
+
+const users = {
+  "userRandomID": {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur"
+  },
+  "user2RandomID": {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk"
+  }
+};
+
 //Generate a random string for the shoert URL
 
 function generateRandomString() {
@@ -21,11 +39,6 @@ function generateRandomString() {
     randomString += characters.charAt(Math.random() * characters.length);
  }
  return randomString;
-};
-
-const urlDatabase= {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
 };
 
 app.get("/", (req, res) => {
@@ -116,4 +129,16 @@ app.get("/register", (req, res) => {
   const templateVars = { shortURL, longURL: urlDatabase[shortURL],
   username: req.cookies["username"]}
   res.render("urls_register", templateVars);
+});
+
+//registeration handler
+
+app.post("/register", (req, res) => {
+  let id = generateRandomString();
+  let email = req.body.email;
+  let password = req.body.password;
+  users[id] = { id, email, password};
+  console.log(users);
+  res.cookie('user_id', id);
+  res.redirect("/urls");
 });
