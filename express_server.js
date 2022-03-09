@@ -87,7 +87,7 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
-//Edit existing url
+// edit existing url
 
 app.post("/urls/:shortURL", (req, res) => {
   let newLongURL = req.body.newLongURL;
@@ -96,10 +96,15 @@ app.post("/urls/:shortURL", (req, res) => {
   res.redirect("/urls");
 });
 
-//It should set a cookie named username to the value submitted 
-//in the request body via the login form. After our server has set the cookie it should redirect the browser back to the /urls page.
-
+// set the cookie
 app.post("/login", (req, res) => {
   res.cookie('username', req.body.username);
+  res.redirect("/urls");
+});
+
+// clear the cookie ona logout
+
+app.post("/logout", (req, res) => {
+  res.clearCookie('username');
   res.redirect("/urls");
 });
