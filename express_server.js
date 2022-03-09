@@ -102,9 +102,18 @@ app.post("/login", (req, res) => {
   res.redirect("/urls");
 });
 
-// clear the cookie ona logout
+// clear the cookie on a logout
 
 app.post("/logout", (req, res) => {
   res.clearCookie('username');
   res.redirect("/urls");
+});
+
+// render register page
+
+app.get("/register", (req, res) => {
+  const shortURL = req.params.shortURL
+  const templateVars = { shortURL, longURL: urlDatabase[shortURL],
+  username: req.cookies["username"]}
+  res.render("urls_register", templateVars);
 });
