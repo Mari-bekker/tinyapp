@@ -94,14 +94,14 @@ app.get("/urls/new", (req, res) => {
 
 app.get("/urls/:shortURL", (req, res) => {
   let user = users[user_id];
-  const shortURL = req.params.shortURL
+  const shortURL = req.params.shortURL;
   const templateVars = { shortURL, longURL: urlDatabase[shortURL],
-    user: user}
+    user: user};
   res.render("urls_show", templateVars);
 });
 
 app.get("/hello", (req, res) => {
-  res.send("<html><body>Hello <b>World</b></body></html>\n")
+  res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 
 // Create a short URL
@@ -113,12 +113,12 @@ app.post("/urls", (req, res) => {
   res.redirect(`/urls/${newURL}`);
 });
 
-//Delete route that removes a URL from the list 
+//Delete route that removes a URL from the list
 
 app.post("/urls/:shortURL/delete", (req, res) => {
   //console.log(req);
   const shortURL = req.params.shortURL;
-  delete urlDatabase[shortURL]; //when a variable is a key, have to use square brackets. 
+  delete urlDatabase[shortURL]; //when a variable is a key, have to use square brackets.
   res.redirect("/urls");
 });
 
@@ -133,7 +133,7 @@ app.get("/u/:shortURL", (req, res) => {
 app.post("/urls/:shortURL", (req, res) => {
   let newLongURL = req.body.newLongURL;
   let shortURL = req.params.shortURL;
-  urlDatabase[shorURL];
+  urlDatabase[shortURL];
 });
 
 // set the cookie
