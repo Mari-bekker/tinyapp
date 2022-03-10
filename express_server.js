@@ -30,7 +30,7 @@ const users = {
 
 //Generate a random string for the shoert URL
 
-function generateRandomString() {
+const generateRandomString = function () {
   // The for loop will run 6 times because it is the convention for the other shortened URLs.
   urlLength = 6;
   let randomString = "";
@@ -39,6 +39,14 @@ function generateRandomString() {
     randomString += characters.charAt(Math.random() * characters.length);
  }
  return randomString;
+};
+
+const checkIfDataExist = function(users, email) {
+  if (users.email) {
+    return false;
+  }
+
+return true;
 };
 
 app.get("/", (req, res) => {
@@ -54,10 +62,10 @@ app.listen(PORT, () => {
 // })
 
 app.get("/urls", (req, res) => {
-  //1. You need to read the cookie value and get the Complete User Object
+  //1. read the cookie value and get the Complete User Object
   let user_id = req.cookies["user_id"];
 
-  //2. Based on this user_id, we will get the complete user
+  //2. Based on this user_id, get the complete user
   let user = users[user_id];
   const templateVars = { urls: urlDatabase, user: user };
   res.render("urls_index", templateVars);
@@ -139,10 +147,18 @@ app.get("/register", (req, res) => {
 
 app.post("/register", (req, res) => {
   let id = generateRandomString();
-  let email = req.body.email;
-  let password = req.body.password;
-  users[id] = { id, email, password};
-  console.log(users);
+  let email = req.body.email.trim();
+  let password = req.body.password.trim();
+
+  //handle error where either email or password are empty
+  if (!email || !password) {
+    res.status(400).send("Email or Password can't be empty");
+    console.log(users);
+  } else if (checkIfDataExist(users, email)) {
+    res.status(400).send("That user already exists");
+  } else {
+    users[id] = { id, email, password};
+  }
   res.cookie('user_id', id);
   res.redirect("/urls");
 });
