@@ -1,3 +1,5 @@
+<!--Create a new template with a login form; -->
+<!--ths form should ask for an email and password and send a POST request to /login. -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -7,7 +9,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 
-    <title>Register - TinyApp Example</title>
+    <title>Login - TinyApp Example</title>
   </head>
 
   <body>
@@ -15,14 +17,12 @@
     <%- include('partials/_header') %>
 
     <main style="margin: 1em;">
-      <h3>Register</h3>
-      <form action="/register" method="POST">
-      <div id="sign-up">
-      </div>
-      <input class="block-input-field" type="email" name="email" placeholder="email address">
-      <input class="block-input-field" type="password" name="password" placeholder="password">
-      <input class="btn btn-primary" input type="submit">
-    </form>
+      <h3>Login:</h3>
+      <form action="/login" method="POST">
+        <input class="block-input-field" type="email" name="email" placeholder="email address">
+        <input class="block-input-field" type="password" name="password" placeholder="password">
+        <input class="btn btn-primary" input type="submit">
+      </form>
     </main>
       <!-- Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

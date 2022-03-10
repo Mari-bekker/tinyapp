@@ -5,12 +5,13 @@ const PORT = 8080; //default port
 const cookieParser = require('cookie-parser');
 
 const bodyParser = require("body-parser");
+const e = require("express");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 
 app.set("view engine", "ejs");
 
-const urlDatabase= {
+const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
@@ -28,26 +29,39 @@ const users = {
   }
 };
 
-//Generate a random string for the shoert URL
+///////////// HELPER METHPDS /////////////
 
-const generateRandomString = function () {
+//Generate a random string for the short URL
+
+const generateRandomString = function() {
   // The for loop will run 6 times because it is the convention for the other shortened URLs.
-  urlLength = 6;
+  const urlLength = 6;
   let randomString = "";
   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  for ( let i = 0; i < urlLength; i++ ) {
+  for (let i = 0; i < urlLength; i++) {
     randomString += characters.charAt(Math.random() * characters.length);
- }
- return randomString;
+  }
+  return randomString;
 };
 
 const checkIfDataExist = function(users, email) {
-  if (users.email) {
-    return false;
+  for (const user in users) {
+    if (users[user].email === email) {
+      return true;
+    }
   }
-
-return true;
+return false;
 };
+
+const getUserByEmail = function(email) {
+  for (const user in users) {
+    if (users[user].email === email) {
+      return users[user]
+    }
+  }
+}
+
+///////////// ROUTES /////////////
 
 app.get("/", (req, res) => {
   res.send("Hello");
@@ -124,14 +138,24 @@ app.post("/urls/:shortURL", (req, res) => {
 
 // set the cookie
 app.post("/login", (req, res) => {
-  res.cookie('username', req.body.username);
+  //res.cookie('username', req.body.username);
+  let userEmail = req.body.email;
+  let user = getUserByEmail(userEmail);
+  if (user) {
+    res.cookie('user_id', user.id);
+  } else {
+    res.redirect("/register");
+
+  }
+  
   res.redirect("/urls");
+  // get the email, and based on email figure out ID and then set the cookie to that
 });
 
 // clear the cookie on a logout
 
 app.post("/logout", (req, res) => {
-  res.clearCookie('username');
+  res.clearCookie('user_id');
   res.redirect("/urls");
 });
 
@@ -161,4 +185,13 @@ app.post("/register", (req, res) => {
   }
   res.cookie('user_id', id);
   res.redirect("/urls");
+});
+
+//login page
+
+app.get("/login", (req, res) => {
+  let user_id = req.cookies["user_id"];
+  let user = users[user_id];
+  const templateVars = { urls: urlDatabase, user: user };
+  res.render("login", templateVars);
 });
