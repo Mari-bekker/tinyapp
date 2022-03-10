@@ -54,21 +54,27 @@ app.listen(PORT, () => {
 // })
 
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase,
-    username: req.cookies["username"] };
+  //1. You need to read the cookie value and get the Complete User Object
+  let user_id = req.cookies["user_id"];
+
+  //2. Based on this user_id, we will get the complete user
+  let user = users[user_id];
+  const templateVars = { urls: urlDatabase, user: user };
   res.render("urls_index", templateVars);
 });
 
 app.get("/urls/new", (req, res) => {
-  const templateVars = { 
-    username: req.cookies["username"] };
+  let user_id = req.cookies["user_id"];
+  let user = users[user_id];
+  const templateVars = { urls: urlDatabase, user: user };
   res.render("urls_new", templateVars);
 });
 
 app.get("/urls/:shortURL", (req, res) => {
+  let user = users[user_id];
   const shortURL = req.params.shortURL
   const templateVars = { shortURL, longURL: urlDatabase[shortURL],
-    username: req.cookies["username"]}
+    user: user}
   res.render("urls_show", templateVars);
 });
 
@@ -105,8 +111,7 @@ app.get("/u/:shortURL", (req, res) => {
 app.post("/urls/:shortURL", (req, res) => {
   let newLongURL = req.body.newLongURL;
   let shortURL = req.params.shortURL;
-  urlDatabase[shortURL] = newLongURL;
-  res.redirect("/urls");
+  urlDatabase[shorURL];
 });
 
 // set the cookie
@@ -125,9 +130,8 @@ app.post("/logout", (req, res) => {
 // render register page
 
 app.get("/register", (req, res) => {
-  const shortURL = req.params.shortURL
-  const templateVars = { shortURL, longURL: urlDatabase[shortURL],
-  username: req.cookies["username"]}
+  //const shortURL = req.params.shortURL
+  const templateVars = { user: null};
   res.render("urls_register", templateVars);
 });
 
