@@ -44,14 +44,14 @@ const generateRandomString = function() {
   return randomString;
 };
 
-const checkIfDataExist = function(users, email) {
-  for (const user in users) {
-    if (users[user].email === email) {
-      return true;
-    }
-  }
-return false;
-};
+// const checkIfDataExist = function(users, email) {
+//   for (const user in users) {
+//     if (users[user].email === email) {
+//       return true;
+//     }
+//   }
+// return false;
+// };
 
 const getUserByEmail = function(email) {
   for (const user in users) {
@@ -70,10 +70,6 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
 });
-
-// app.get("/urls.json", (req, res) => {
-//   res.json(urlDatabase);
-// })
 
 app.get("/urls", (req, res) => {
   //1. read the cookie value and get the Complete User Object
@@ -116,7 +112,6 @@ app.post("/urls", (req, res) => {
 //Delete route that removes a URL from the list
 
 app.post("/urls/:shortURL/delete", (req, res) => {
-  //console.log(req);
   const shortURL = req.params.shortURL;
   delete urlDatabase[shortURL]; //when a variable is a key, have to use square brackets.
   res.redirect("/urls");
@@ -136,16 +131,14 @@ app.post("/urls/:shortURL", (req, res) => {
   urlDatabase[shortURL];
 });
 
-// set the cookie
+// Login handling
 app.post("/login", (req, res) => {
-  //res.cookie('username', req.body.username);
   let userEmail = req.body.email;
   let user = getUserByEmail(userEmail);
   if (user) {
     res.cookie('user_id', user.id);
   } else {
     res.redirect("/register");
-
   }
   
   res.redirect("/urls");
@@ -174,11 +167,9 @@ app.post("/register", (req, res) => {
   let email = req.body.email.trim();
   let password = req.body.password.trim();
 
-  //handle error where either email or password are empty
   if (!email || !password) {
     res.status(400).send("Email or Password can't be empty");
-    console.log(users);
-  } else if (checkIfDataExist(users, email)) {
+  } else if (getUserByEmail(email)) {
     res.status(400).send("That user already exists");
   } else {
     users[id] = { id, email, password};
