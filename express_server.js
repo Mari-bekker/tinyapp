@@ -76,7 +76,12 @@ app.get("/urls/new", (req, res) => {
   let user_id = req.cookies["user_id"];
   let user = users[user_id];
   const templateVars = { urls: urlDatabase, user: user };
-  res.render("urls_new", templateVars);
+  if (user_id) {
+    res.render('urls_new', templateVars);
+  }
+  else {
+    res.redirect('/login');
+  }
 });
 
 app.get("/urls/:shortURL", (req, res) => {
@@ -92,13 +97,22 @@ app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 
-// Create a short URL
+// Create a short URL/add new URL
 
 app.post("/urls", (req, res) => {
-  let newURL = generateRandomString();
-  urlDatabase[newURL] = req.body.longURL;
-  res.redirect(`/urls/${newURL}`);
+  let user_id = req.cookies["user_id"];
+  if (user_id) {
+    let newURL = generateRandomString();
+    urlDatabase[newURL] = req.body.longURL;
+    res.redirect(`/urls/${newURL}`);
+  }
+  else {
+    res.status(400).send("You cannot add new URLS unless you're logged in\n");
+  }
 });
+
+
+
 
 //Delete route that removes a URL from the list
 
@@ -119,11 +133,10 @@ app.get("/u/:shortURL", (req, res) => {
 app.post("/urls/:id", (req, res) => {
   let newLongURL = req.body.newLongURL;
   let shortURLID = req.params.id;
-  console.log(req.params);
   urlDatabase[shortURLID] = newLongURL;
   res.redirect("/urls");
-
 });
+
 
 // Login handling
 app.post("/login", (req, res) => {
