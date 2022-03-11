@@ -17,12 +17,17 @@
     <%- include('partials/_header') %>
 
     <main style="margin: 1em;">
-      <h3>Login:</h3>
+      <h3><strong>Login</strong></h3>
       <form action="/login" method="POST">
-        <input class="block-input-field" type="email" name="email" placeholder="email address">
-        <input class="block-input-field" type="password" name="password" placeholder="password">
-        <input class="btn btn-primary" input type="submit">
-      </form>
+        Email address
+        <br>
+        <input class="block-input-field" type="email" name="email" placeholder="Enter email">
+        <br><br>
+        Password
+        <br>
+        <input class="block-input-field" type="password" name="password" placeholder="Password">
+        <br><br>
+        <input class="btn btn-primary" input type="submit" value="Login">
     </main>
       <!-- Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

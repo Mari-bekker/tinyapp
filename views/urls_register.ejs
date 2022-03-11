@@ -15,13 +15,17 @@
     <%- include('partials/_header') %>
 
     <main style="margin: 1em;">
-      <h3>Register</h3>
+      <h3><strong></strong>Create account</strong></h3>
       <form action="/register" method="POST">
-      <div id="sign-up">
-      </div>
+        Email
+        <br>
       <input class="block-input-field" type="email" name="email" placeholder="email address">
+      <br><br>
+      Password
+      <br>
       <input class="block-input-field" type="password" name="password" placeholder="password">
-      <input class="btn btn-primary" input type="submit">
+      <br><br>
+      <input class="btn btn-primary" input type="submit" value="Register">
     </form>
     </main>
       <!-- Bootstrap JS -->

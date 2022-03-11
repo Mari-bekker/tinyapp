@@ -44,15 +44,6 @@ const generateRandomString = function() {
   return randomString;
 };
 
-// const checkIfDataExist = function(users, email) {
-//   for (const user in users) {
-//     if (users[user].email === email) {
-//       return true;
-//     }
-//   }
-// return false;
-// };
-
 const getUserByEmail = function(email) {
   for (const user in users) {
     if (users[user].email === email) {
