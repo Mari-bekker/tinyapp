@@ -154,7 +154,12 @@ app.get("/register", (req, res) => {
   let user_id = req.cookies["user_id"];
   let user = users[user_id];
   const templateVars = { urls: urlDatabase, user: user };
-  res.render("urls_register", templateVars);
+  if (user_id) {
+    res.redirect('/urls/');
+  }
+  else {
+    res.render('urls_register', templateVars);
+  }
 });
 
 //registeration handler
@@ -181,5 +186,11 @@ app.get("/login", (req, res) => {
   let user_id = req.cookies["user_id"];
   let user = users[user_id];
   const templateVars = { urls: urlDatabase, user: user };
-  res.render("login", templateVars);
-});
+  if (user_id) {
+    res.redirect('/urls/');
+  }
+  else {
+    res.render('login', templateVars);
+  }
+  });
+
