@@ -66,7 +66,7 @@ app.get("/urls", (req, res) => {
   //1. read the cookie value and get the Complete User Object
   let user_id = req.cookies["user_id"];
 
-  //2. Based on this user_id, get the complete user
+  //2. Based on this user_id, get the user
   let user = users[user_id];
   const templateVars = { urls: urlDatabase, user: user };
   res.render("urls_index", templateVars);
@@ -80,6 +80,7 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
+  let user_id = req.cookies["user_id"];
   let user = users[user_id];
   const shortURL = req.params.shortURL;
   const templateVars = { shortURL, longURL: urlDatabase[shortURL],
@@ -94,7 +95,6 @@ app.get("/hello", (req, res) => {
 // Create a short URL
 
 app.post("/urls", (req, res) => {
-  //console.log(req.body);  // Log the POST request body to the console
   let newURL = generateRandomString();
   urlDatabase[newURL] = req.body.longURL;
   res.redirect(`/urls/${newURL}`);
@@ -116,10 +116,13 @@ app.get("/u/:shortURL", (req, res) => {
 
 // edit existing url
 
-app.post("/urls/:shortURL", (req, res) => {
+app.post("/urls/:id", (req, res) => {
   let newLongURL = req.body.newLongURL;
-  let shortURL = req.params.shortURL;
-  urlDatabase[shortURL];
+  let shortURLID = req.params.id;
+  console.log(req.params);
+  urlDatabase[shortURLID] = newLongURL;
+  res.redirect("/urls");
+
 });
 
 // Login handling
