@@ -12,8 +12,14 @@ app.use(cookieParser());
 app.set("view engine", "ejs");
 
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "b2xVn2": {
+    longURL:"http://www.lighthouselabs.ca",
+    userID: "userRandomID"
+  },
+  "9sm5xK": {
+  longURL: "http://www.google.com",
+  userID: "user2RandomID"
+  }
 };
 
 const users = {
@@ -88,7 +94,7 @@ app.get("/urls/:shortURL", (req, res) => {
   let user_id = req.cookies["user_id"];
   let user = users[user_id];
   const shortURL = req.params.shortURL;
-  const templateVars = { shortURL, longURL: urlDatabase[shortURL],
+  const templateVars = { shortURL, longURL: urlDatabase[shortURL].longURL,
     user: user};
   res.render("urls_show", templateVars);
 });
@@ -103,16 +109,14 @@ app.post("/urls", (req, res) => {
   let user_id = req.cookies["user_id"];
   if (user_id) {
     let newURL = generateRandomString();
-    urlDatabase[newURL] = req.body.longURL;
+    let userID = users[user_id].id
+    urlDatabase[newURL] = { longURL: req.body.longURL, userID }
     res.redirect(`/urls/${newURL}`);
   }
   else {
     res.status(400).send("You cannot add new URLS unless you're logged in\n");
   }
 });
-
-
-
 
 //Delete route that removes a URL from the list
 
@@ -124,7 +128,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 
 app.get("/u/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
-  const longURL = urlDatabase[shortURL];
+  const longURL = urlDatabase[shortURL].longURL;
   res.redirect(longURL);
 });
 
@@ -133,7 +137,7 @@ app.get("/u/:shortURL", (req, res) => {
 app.post("/urls/:id", (req, res) => {
   let newLongURL = req.body.newLongURL;
   let shortURLID = req.params.id;
-  urlDatabase[shortURLID] = newLongURL;
+  urlDatabase[shortURLID].longURL = newLongURL;
   res.redirect("/urls");
 });
 
