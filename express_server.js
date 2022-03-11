@@ -56,10 +56,10 @@ const generateRandomString = function() {
 const getUserByEmail = function(email) {
   for (const user in users) {
     if (users[user].email === email) {
-      return users[user]
+      return users[user];
     }
   }
-}
+};
 
 ///////////// ROUTES /////////////
 
@@ -133,16 +133,17 @@ app.post("/urls/:shortURL", (req, res) => {
 
 // Login handling
 app.post("/login", (req, res) => {
-  let userEmail = req.body.email;
+  let userEmail = req.body.email.trim();
+  let userPassword = req.body.password.trim();
   let user = getUserByEmail(userEmail);
-  if (user) {
-    res.cookie('user_id', user.id);
+  if (!user) {
+    res.status(403).send("User does not exist");
+  } else if (userPassword !== user.password) {
+    res.status(403).send("Incorrect password");
   } else {
-    res.redirect("/register");
+    res.cookie('user_id', user.id);
+    res.redirect("/urls");
   }
-  
-  res.redirect("/urls");
-  // get the email, and based on email figure out ID and then set the cookie to that
 });
 
 // clear the cookie on a logout
@@ -155,8 +156,10 @@ app.post("/logout", (req, res) => {
 // render register page
 
 app.get("/register", (req, res) => {
-  //const shortURL = req.params.shortURL
-  const templateVars = { user: null};
+  //const templateVars = { user: null};
+  let user_id = req.cookies["user_id"];
+  let user = users[user_id];
+  const templateVars = { urls: urlDatabase, user: user };
   res.render("urls_register", templateVars);
 });
 
