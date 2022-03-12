@@ -72,7 +72,7 @@ const urlsForUser = function(id) {
 };
 
 const passwordChecker = function(userID, password) {
-  let hashedPassword = users[userID].password
+  let hashedPassword = users[userID].password;
   return bcrypt.compareSync(password, hashedPassword)
 };
 
@@ -190,10 +190,9 @@ app.post("/login", (req, res) => {
   let userPassword = req.body.password.trim();
   let user = getUserByEmail(userEmail);
   let userID = user.id;
-  console.log(passwordChecker(userID, userPassword))
   if (!user) {
     res.status(403).send("User does not exist");
-  } else if (userPassword !== user.password) {
+  } else if (!passwordChecker(userID, userPassword)) {
     res.status(403).send("Incorrect password");
   } else {
     res.cookie('user_id', user.id);
