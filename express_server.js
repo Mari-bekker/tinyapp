@@ -69,14 +69,17 @@ app.listen(PORT, () => {
 });
 
 app.get("/urls", (req, res) => {
-  //1. read the cookie value and get the Complete User Object
   let user_id = req.cookies["user_id"];
-
-  //2. Based on this user_id, get the user
   let user = users[user_id];
-  const templateVars = { urls: urlDatabase, user: user };
-  res.render("urls_index", templateVars);
+  if (user_id) {
+    const templateVars = { urls: urlDatabase, user: user };
+    res.render("urls_index", templateVars);
+
+  } else {
+    res.status(403).send("You must login or register first to view urls");
+  }
 });
+
 
 app.get("/urls/new", (req, res) => {
   let user_id = req.cookies["user_id"];
