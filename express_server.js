@@ -72,7 +72,7 @@ const urlsForUser = function(id) {
 };
 
 const passwordChecker = function(userID, password) {
-  let hashedPassword = users[userID].password;
+  let hashedPassword = users[userID].password
   return bcrypt.compareSync(password, hashedPassword)
 };
 
