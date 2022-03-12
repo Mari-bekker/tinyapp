@@ -3,13 +3,15 @@ const app = express();
 const PORT = 8080; //default port
 
 const cookieParser = require('cookie-parser');
-
 const bodyParser = require("body-parser");
 const e = require("express");
+const bcrypt = require('bcryptjs');
+
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
-
 app.set("view engine", "ejs");
+
+//////Objects and Data//////
 
 const urlDatabase = {
   "b2xVn2": {
@@ -219,7 +221,7 @@ app.get("/register", (req, res) => {
 app.post("/register", (req, res) => {
   let id = generateRandomString();
   let email = req.body.email.trim();
-  let password = req.body.password.trim();
+  let password = bcrypt.hashSync(req.body.password.trim(), 10);
 
   if (!email || !password) {
     res.status(400).send("Email or Password can't be empty");
@@ -227,9 +229,9 @@ app.post("/register", (req, res) => {
     res.status(400).send("That user already exists");
   } else {
     users[id] = { id, email, password};
+    res.cookie('user_id', id);
+    res.redirect("/urls");
   }
-  res.cookie('user_id', id);
-  res.redirect("/urls");
 });
 
 //login page
