@@ -159,10 +159,15 @@ app.get("/u/:shortURL", (req, res) => {
 app.post("/urls/:id", (req, res) => {
   let newLongURL = req.body.newLongURL;
   let shortURLID = req.params.id;
-  urlDatabase[shortURLID].longURL = newLongURL;
-  res.redirect("/urls");
+  let user_id = req.cookies["user_id"];
+  let urlID = urlDatabase[shortURLID].userID;
+  if (user_id === urlID) {
+    urlDatabase[shortURLID].longURL = newLongURL;
+    res.redirect("/urls");
+  } else {
+    res.status(403).send("You cannot edit a URL that does not belong to you");
+  }
 });
-
 
 // Login handling
 app.post("/login", (req, res) => {
