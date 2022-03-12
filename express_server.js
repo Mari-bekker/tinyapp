@@ -88,7 +88,7 @@ app.get("/urls", (req, res) => {
     res.render("urls_index", templateVars);
 
   } else {
-    res.status(403).send("You must login or register first to view urls");
+    res.status(403).send("<html><body>You must login or register first to view urls</body></html>");
   }
 });
 
@@ -129,7 +129,7 @@ app.post("/urls", (req, res) => {
     res.redirect(`/urls/${newURL}`);
   }
   else {
-    res.status(400).send("You cannot add new URLS unless you're logged in\n");
+    res.status(400).send("<html><body>You cannot add new URLS unless you're logged in\n</body></html>");
   }
 });
 
@@ -137,8 +137,16 @@ app.post("/urls", (req, res) => {
 
 app.post("/urls/:shortURL/delete", (req, res) => {
   const shortURL = req.params.shortURL;
-  delete urlDatabase[shortURL]; //when a variable is a key, have to use square brackets.
-  res.redirect("/urls");
+  let user_id = req.cookies["user_id"];
+  let urlID = urlDatabase[shortURL].userID;
+  if (user_id === urlID) {
+    delete urlDatabase[shortURL]; //when a variable is a key, have to use square brackets.
+    res.redirect("/urls");
+  } else {
+    res.status(400).send("<html><body>You cannot delete new URLS unless you're logged in</body></html>\n");
+
+  }
+  console.log(urlDatabase);
 });
 
 //  /u/:id => go to the long URL from the short URL
@@ -165,8 +173,8 @@ app.post("/urls/:id", (req, res) => {
     urlDatabase[shortURLID].longURL = newLongURL;
     res.redirect("/urls");
   } else {
-    res.status(403).send("You cannot edit a URL that does not belong to you");
-  }
+    res.status(403).send("<html><body>You cannot edit a URL that does not belong to you</body></html>");
+  } 
 });
 
 // Login handling
