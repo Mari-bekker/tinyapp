@@ -58,6 +58,17 @@ const getUserByEmail = function(email) {
   }
 };
 
+const urlsForUser = function(id) {
+  //returns the URLs where the userID is equal to the id of the currently logged-in user.
+  let sortedURLS = {}
+  for (const url in urlDatabase) {
+    console.log(url)
+    if (url === id) {
+      sortedURLS[url] = urlDatabase[url] 
+    }
+    return sortedURLS;
+  };
+
 ///////////// ROUTES /////////////
 
 app.get("/", (req, res) => {
