@@ -62,12 +62,12 @@ const urlsForUser = function(id) {
   //returns the URLs where the userID is equal to the id of the currently logged-in user.
   let sortedURLS = {}
   for (const url in urlDatabase) {
-    console.log(url)
-    if (url === id) {
+    if (urlDatabase[url].userID === id) {
       sortedURLS[url] = urlDatabase[url] 
     }
     return sortedURLS;
-  };
+  }
+};
 
 ///////////// ROUTES /////////////
 
@@ -83,7 +83,8 @@ app.get("/urls", (req, res) => {
   let user_id = req.cookies["user_id"];
   let user = users[user_id];
   if (user_id) {
-    const templateVars = { urls: urlDatabase, user: user };
+    const sortedURLS = urlsForUser(user_id);
+    const templateVars = { urls: sortedURLS, user: user };
     res.render("urls_index", templateVars);
 
   } else {
@@ -231,4 +232,3 @@ app.get("/login", (req, res) => {
     res.render('login', templateVars);
   }
   });
-
