@@ -9,6 +9,8 @@ Users are able to edit and delete their own URLS.
 npm install
 npm start 
 
+Navigate to localhost:8080/login or localhost:8080/register to begin.
+
 ## Screenshots
 
 !["List of URLS entered by user"](/tinyAppScreenshot.png);
