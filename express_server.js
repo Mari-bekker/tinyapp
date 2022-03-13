@@ -26,8 +26,8 @@ const urlDatabase = {
     userID: "userRandomID"
   },
   "9sm5xK": {
-  longURL: "http://www.google.com",
-  userID: "user2RandomID"
+    longURL: "http://www.google.com",
+    userID: "user2RandomID"
   }
 };
 
@@ -44,7 +44,24 @@ const users = {
   }
 };
 
-///////////// HELPER METHPDS /////////////
+///////////// HELPER METHODS /////////////
+
+const urlsForUser = function(id) {
+  //returns the URLs where the userID is equal to the id of the currently logged-in user.
+  let sortedURLS = {};
+  for (const url in urlDatabase) {
+    if (urlDatabase[url].userID === id) {
+      sortedURLS[url] = urlDatabase[url];
+    }
+  }
+  return sortedURLS;
+};
+
+const passwordChecker = function(userID, password) {
+  // returns a comparison between entered password and a saved hashed password
+  let hashedPassword = users[userID].password;
+  return bcrypt.compareSync(password, hashedPassword);
+};
 
 const generateRandomString = function() {
   // The for loop will run 6 times because it is the convention for the other shortened URLs.
@@ -57,23 +74,6 @@ const generateRandomString = function() {
   return randomString;
 };
 
-const urlsForUser = function(id) {
-  //returns the URLs where the userID is equal to the id of the currently logged-in user.
-  let sortedURLS = {}
-  console.log(id);
-  for (const url in urlDatabase) {
-    if (urlDatabase[url].userID === id) {
-      sortedURLS[url] = urlDatabase[url]
-    }
-  }
-  return sortedURLS;
-};
-
-const passwordChecker = function(userID, password) {
-  let hashedPassword = users[userID].password
-  return bcrypt.compareSync(password, hashedPassword)
-};
-
 ///////////// ROUTES /////////////
 
 app.get("/", (req, res) => {
@@ -84,12 +84,13 @@ app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
 });
 
+// display the URLS list page for a logged in user
+
 app.get("/urls", (req, res) => {
   let user_id = req.session.user_id;
   let user = users[user_id];
   if (user_id) {
     const sortedURLS = urlsForUser(user_id);
-    console.log(sortedURLS);
     const templateVars = { urls: sortedURLS, user: user };
     res.render("urls_index", templateVars);
   } else {
@@ -97,17 +98,20 @@ app.get("/urls", (req, res) => {
   }
 });
 
+// display the create a new URL page
+
 app.get("/urls/new", (req, res) => {
   let user_id = req.session.user_id;
   let user = users[user_id];
   const templateVars = { urls: urlDatabase, user: user };
   if (user_id) {
     res.render('urls_new', templateVars);
-  }
-  else {
+  } else {
     res.redirect('/login');
   }
 });
+
+// display the created short url
 
 app.get("/urls/:shortURL", (req, res) => {
   let user_id = req.session.user_id;
@@ -118,22 +122,16 @@ app.get("/urls/:shortURL", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
-app.get("/hello", (req, res) => {
-  res.send("<html><body>Hello <b>World</b></body></html>\n");
-});
-
 // Create a short URL/add new URL
 
 app.post("/urls", (req, res) => {
   let user_id = req.session.user_id;
   if (user_id) {
     let newURL = generateRandomString();
-    let userID = users[user_id].id
-    urlDatabase[newURL] = { longURL: req.body.longURL, userID }
-    //console.log(urlDatabase);
+    let userID = users[user_id].id;
+    urlDatabase[newURL] = { longURL: req.body.longURL, userID };
     res.redirect(`/urls/${newURL}`);
-  }
-  else {
+  } else {
     res.status(400).send("<html><body>You cannot add new URLS unless you're logged in\n</body></html>");
   }
 });
@@ -151,7 +149,6 @@ app.post("/urls/:shortURL/delete", (req, res) => {
     res.status(400).send("<html><body>You cannot delete new URLS unless you're logged in</body></html>\n");
 
   }
-  console.log(urlDatabase);
 });
 
 //  /u/:id => go to the long URL from the short URL
@@ -163,23 +160,22 @@ app.get("/u/:shortURL", (req, res) => {
   } else {
     res.status(403).send("That ID does not exist");
 
-  }  
+  }
 });
-
 
 // edit existing url
 
 app.post("/urls/:id", (req, res) => {
   let newLongURL = req.body.newLongURL;
   let shortURLID = req.params.id;
-  let user_id = req.session.user_id
+  let user_id = req.session.user_id;
   let urlID = urlDatabase[shortURLID].userID;
   if (user_id === urlID) {
     urlDatabase[shortURLID].longURL = newLongURL;
     res.redirect("/urls");
   } else {
     res.status(403).send("<html><body>You cannot edit a URL that does not belong to you</body></html>");
-  } 
+  }
 });
 
 // Login handling
@@ -208,14 +204,13 @@ app.post("/logout", (req, res) => {
 // render register page
 
 app.get("/register", (req, res) => {
-  req.session.user_id
+  req.session.user_id;
   let user_id = req.session.user_id;
   let user = users[user_id];
   const templateVars = { urls: urlDatabase, user: user };
   if (user_id) {
     res.redirect('/urls/');
-  }
-  else {
+  } else {
     res.render('register', templateVars);
   }
 });
@@ -246,8 +241,7 @@ app.get("/login", (req, res) => {
   const templateVars = { urls: urlDatabase, user: user };
   if (user_id) {
     res.redirect('/urls/');
-  }
-  else {
+  } else {
     res.render('login', templateVars);
   }
-  });
+});
