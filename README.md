@@ -11,7 +11,7 @@ node express-server.js
 
 ## Screenshots
 
-!["List of URLS entered by user"](/snakeGame.png);
+!["List of URLS entered by user"](/tinyAppScreenshot.png);
 
 ## Dependencies for this project:
 Node.js

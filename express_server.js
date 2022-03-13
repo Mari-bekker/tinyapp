@@ -60,12 +60,13 @@ const generateRandomString = function() {
 const urlsForUser = function(id) {
   //returns the URLs where the userID is equal to the id of the currently logged-in user.
   let sortedURLS = {}
+  console.log(id);
   for (const url in urlDatabase) {
     if (urlDatabase[url].userID === id) {
-      sortedURLS[url] = urlDatabase[url] 
+      sortedURLS[url] = urlDatabase[url]
     }
-    return sortedURLS;
   }
+  return sortedURLS;
 };
 
 const passwordChecker = function(userID, password) {
@@ -76,7 +77,7 @@ const passwordChecker = function(userID, password) {
 ///////////// ROUTES /////////////
 
 app.get("/", (req, res) => {
-  res.send("Hello");
+  res.send("Hello, please go to /url or /login to start");
 });
 
 app.listen(PORT, () => {
@@ -88,14 +89,13 @@ app.get("/urls", (req, res) => {
   let user = users[user_id];
   if (user_id) {
     const sortedURLS = urlsForUser(user_id);
+    console.log(sortedURLS);
     const templateVars = { urls: sortedURLS, user: user };
     res.render("urls_index", templateVars);
-
   } else {
     res.status(403).send("<html><body>You must login or register first to view urls</body></html>");
   }
 });
-
 
 app.get("/urls/new", (req, res) => {
   let user_id = req.session.user_id;
@@ -130,6 +130,7 @@ app.post("/urls", (req, res) => {
     let newURL = generateRandomString();
     let userID = users[user_id].id
     urlDatabase[newURL] = { longURL: req.body.longURL, userID }
+    //console.log(urlDatabase);
     res.redirect(`/urls/${newURL}`);
   }
   else {
