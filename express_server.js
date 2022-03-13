@@ -215,7 +215,7 @@ app.get("/register", (req, res) => {
     res.redirect('/urls/');
   }
   else {
-    res.render('urls_register', templateVars);
+    res.render('register', templateVars);
   }
 });
 
