@@ -2,6 +2,8 @@ const express = require("express");
 const app = express();
 const PORT = 8080; //default port
 
+const getUserByEmail = require('./helpers');
+
 const cookieSession = require('cookie-session');
 const bodyParser = require("body-parser");
 const e = require("express");
@@ -44,8 +46,6 @@ const users = {
 
 ///////////// HELPER METHPDS /////////////
 
-//Generate a random string for the short URL
-
 const generateRandomString = function() {
   // The for loop will run 6 times because it is the convention for the other shortened URLs.
   const urlLength = 6;
@@ -55,14 +55,6 @@ const generateRandomString = function() {
     randomString += characters.charAt(Math.random() * characters.length);
   }
   return randomString;
-};
-
-const getUserByEmail = function(email) {
-  for (const user in users) {
-    if (users[user].email === email) {
-      return users[user];
-    }
-  }
 };
 
 const urlsForUser = function(id) {
@@ -193,7 +185,7 @@ app.post("/urls/:id", (req, res) => {
 app.post("/login", (req, res) => {
   let userEmail = req.body.email.trim();
   let userPassword = req.body.password.trim();
-  let user = getUserByEmail(userEmail);
+  let user = getUserByEmail(userEmail, users);
   let userID = user.id;
   if (!user) {
     res.status(403).send("User does not exist");
@@ -236,7 +228,7 @@ app.post("/register", (req, res) => {
 
   if (!email || !password) {
     res.status(400).send("Email or Password can't be empty");
-  } else if (getUserByEmail(email)) {
+  } else if (getUserByEmail(email, users)) {
     res.status(400).send("That user already exists");
   } else {
     users[id] = { id, email, password};
